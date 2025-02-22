@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Contracts\Identity\" />
     <Folder Include="Contracts\Infrastructure\" />
-    <Folder Include="Contracts\Persistance\" />
     <Folder Include="Specifications\" />
   </ItemGroup>
 
@@ -18,6 +17,11 @@
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaseCore.Domain\BaseCore.Domain.csproj" />
+    <ProjectReference Include="..\BaseCore.Infrastructure\BaseCore.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

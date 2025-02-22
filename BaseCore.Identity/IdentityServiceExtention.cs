@@ -19,7 +19,7 @@ namespace BaseCore.Identity
         {
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
-            services.AddDbContext<BaseCoreIdentityContext>(options => options.UseSqlServer(configuration.GetConnectionString("GloboTicketIdentityConnectionString"),
+            services.AddDbContext<BaseCoreIdentityContext>(options => options.UseSqlServer(configuration.GetConnectionString("BaseCoreIdentityConnection"),
                 b => b.MigrationsAssembly(typeof(BaseCoreIdentityContext).Assembly.FullName)));
 
             services.AddIdentity<AppUser, AppRole>()
