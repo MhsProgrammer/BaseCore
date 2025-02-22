@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 
 
-namespace BaseCore.Application.Features.Product
+namespace BaseCore.Application.Features.Product.Commands
 {
     public class AddProductCommandHandler : IRequestHandler<AddProductCommand, ProductDto>
     {

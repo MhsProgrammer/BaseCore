@@ -1,4 +1,4 @@
-﻿using BaseCore.Application.Features.Product;
+﻿using BaseCore.Application.Features.Product.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

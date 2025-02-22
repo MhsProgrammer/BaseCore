@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BaseCore.Persistance
 {
-    public class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
+    public class SpecificationEvaluator<TEntity> where TEntity : class
     {
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecification<TEntity> spec)
         {
