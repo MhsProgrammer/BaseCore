@@ -1,4 +1,4 @@
-﻿using BaseCore.Domain.Common;
+﻿ using BaseCore.Domain.Common;
 using BaseCore.Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System;

@@ -14,7 +14,7 @@ namespace BaseCore.Domain.Entities
         [Required]
         [MaxLength(300)]
         [DisplayName("نام محصول")]
-        public string PorudctName { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
 
 
 

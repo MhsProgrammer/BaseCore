@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using BaseCore.Application.Features.Products;
+using BaseCore.Application.Features.Products.Commands;
+using BaseCore.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +14,11 @@ namespace BaseCore.Application.Profiles
     {
         public AutoMapperProfile()
         {
-            
+            #region Product
+            CreateMap<AddProductCommand, Product>();
+            CreateMap<UpdateProductCommand, Product>();
+            CreateMap<Product, ProductDto>();
+            #endregion
         }
     }
 }

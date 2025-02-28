@@ -10,6 +10,14 @@ namespace BaseCore.Application.Responses
         public List<string>? Errors { get; set; }
 
 
+        public BaseApiResponse(string message = null)
+        {
+            Success = true;
+            Message = message ?? "عملیات موفقیت‌آمیز بود.";
+            Data = default;
+            Errors = null;
+        }
+
         public BaseApiResponse(T data, string message = null)
         {
             Success = true;
@@ -17,6 +25,8 @@ namespace BaseCore.Application.Responses
             Data = data;
             Errors = null;
         }
+
+       
 
         public BaseApiResponse(string message, List<string> errors = null)
         {

@@ -1,4 +1,6 @@
-﻿using BaseCore.Persistance.Context;
+﻿using BaseCore.Application.Contracts.Persistance;
+using BaseCore.Persistance.Context;
+using BaseCore.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +18,7 @@ namespace BaseCore.Persistance
         {
             services.AddDbContext<BaseCoreContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BaseCoreMainConnection")));
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>(); 
             //services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
 
             //services.AddScoped<ICategoryRepository, CategoryRepository>();

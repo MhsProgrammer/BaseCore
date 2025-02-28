@@ -75,6 +75,7 @@ namespace BaseCore.Api
         {
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
