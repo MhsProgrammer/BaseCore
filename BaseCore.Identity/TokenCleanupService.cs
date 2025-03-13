@@ -11,7 +11,7 @@ namespace BaseCore.Identity
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<TokenCleanupService> _logger;
-        private readonly TimeSpan _interval = TimeSpan.FromHours(1);  // تنظیم برای اجرای هر ۱ ساعت
+        private readonly TimeSpan _interval = TimeSpan.FromHours(1);
 
         public TokenCleanupService(IServiceProvider serviceProvider, ILogger<TokenCleanupService> logger)
         {

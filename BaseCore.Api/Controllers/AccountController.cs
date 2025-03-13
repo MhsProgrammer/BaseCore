@@ -1,6 +1,8 @@
-﻿using BaseCore.Application.Contracts.Identity;
+﻿using BaseCore.Application.Contracts;
+using BaseCore.Application.Contracts.Identity;
 using BaseCore.Application.Models.Authentication;
 using BaseCore.Application.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,11 +14,15 @@ namespace BaseCore.Api.Controllers
     public class AccountController : BaseApiController
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly ILoggedInUserService _loggedInUserService;
         private readonly AuthCookie _authCookie;
-        public AccountController(IOptions<AuthCookie> authCookie, IAuthenticationService authenticationService)
+        public AccountController(IOptions<AuthCookie> authCookie, 
+            IAuthenticationService authenticationService,
+            ILoggedInUserService loggedInUserService)
         {
             _authCookie = authCookie.Value;
             _authenticationService = authenticationService;
+            _loggedInUserService = loggedInUserService;
         }
 
         [HttpPost("Login")]
@@ -52,5 +58,32 @@ namespace BaseCore.Api.Controllers
             return Ok(new BaseApiResponse<object>("با موفقیت خارج شدید"));
 
         }
+
+
+        [HttpGet("ChangeRole")]
+        [Authorize]
+        public async Task<IActionResult> ChangeRole()
+        {
+
+            await _authenticationService.ChangeRole(_loggedInUserService.UserId);
+            return NoContent();
+        }
+
+
+        [HttpGet("SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<ActionResult<string>> SuperAdminText()
+        {
+            return Ok("Hello SuperAdmin");
+        }
+        
+        [HttpGet("User")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<string>> UserText()
+        {
+            return Ok("Hello User");
+        }
+
+
     }
 }

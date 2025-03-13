@@ -1,6 +1,8 @@
 ﻿using BaseCore.Application.Contracts.Identity;
+using BaseCore.Application.Exeptions;
 using BaseCore.Application.Models.Authentication;
 using BaseCore.Identity.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -19,14 +21,17 @@ namespace BaseCore.Identity.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
-
+        private readonly IBlacklistTokenRepository _blacklistTokenRepository;
+        
         public AuthenticationService(UserManager<AppUser> userManager,
             IOptions<JwtSettings> jwtSettings,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            IBlacklistTokenRepository blacklistTokenRepository)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
+            _blacklistTokenRepository = blacklistTokenRepository;
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
@@ -54,7 +59,33 @@ namespace BaseCore.Identity.Services
                 UserName = user.UserName!
             };
 
+            user.AccessToken = response.Token;
+            user.AccessTokenExpireDate = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes);
+            await _userManager.UpdateAsync(user);
+
             return response;
+        }
+
+        public async Task ChangeRole(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException("کاربر" , userId);
+            var isSuperAdmin = await _userManager.IsInRoleAsync(user , "SuperAdmin");
+
+            if (isSuperAdmin)
+            {
+                await _userManager.RemoveFromRoleAsync(user , "SuperAdmin");
+                await _userManager.AddToRoleAsync(user , "User");
+            } else
+            {
+                await _userManager.RemoveFromRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, "SuperAdmin");
+            }
+
+            await _blacklistTokenRepository.AddTokenToBlacklistAsync(user.AccessToken , user.AccessTokenExpireDate);
+
         }
 
         //public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)

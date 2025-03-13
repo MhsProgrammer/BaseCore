@@ -9,5 +9,7 @@ namespace BaseCore.Identity.Models
 {
     public class AppUser : IdentityUser<Guid>
     {
+        public string AccessToken { get; set; } = string.Empty;
+        public DateTime AccessTokenExpireDate { get; set; }
     }
 }

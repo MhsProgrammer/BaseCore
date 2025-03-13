@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using BaseCore.Identity.Repositories;
 using BaseCore.Application.Contracts.Identity;
 using BaseCore.Identity.Services;
+using BaseCore.Application.Contracts;
+using BaseCore.Api.Services;
+using BaseCore.Application.Models.Authentication;
 
 namespace BaseCore.Api
 {
@@ -22,7 +25,6 @@ namespace BaseCore.Api
         {
             AddSwagger(builder.Services);
 
-            //builder.Services.AddSingleton<IBlacklistTokenRepository, BlacklistTokenRepository>();
 
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -30,10 +32,13 @@ namespace BaseCore.Api
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddHostedService<TokenCleanupService>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddTransient<IBlacklistTokenRepository, BlacklistTokenRepository>();
+            builder.Services.Configure<AuthCookie>(builder.Configuration.GetSection("AuthCookie"));
 
-            //builder.Services.AddScoped<BlacklistTokenRepository>();
 
-            //builder.Services.AddScoped<ILoggedInUserService, LoggedInUserService>();
+
+
+            builder.Services.AddScoped<ILoggedInUserService, LoggedInUserService>();
 
 
 
@@ -151,18 +156,42 @@ namespace BaseCore.Api
                 {
                     UserName = "Hamed",
                 };
+                var user2 = new AppUser()
+                {
+                    UserName = "User",
+                };
                 var role = new AppRole()
                 {
                     Name = "SuperAdmin"
                 };
 
+                var role2 = new AppRole()
+                {
+                    Name = "User"
+                };
+
                 var isUserExist = await userManager.FindByNameAsync(user.UserName);
+                var isUser2Exist = await userManager.FindByNameAsync(user2.UserName);
                 var isRoleExist = await roleManager.FindByNameAsync(role.Name);
+                var isRole2Exist = await roleManager.FindByNameAsync(role2.Name);
                 if (isUserExist == null)
                 {
                     try
                     {
                         var result = await userManager.CreateAsync(user, "@#$Hamed.Cr7");
+
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception();
+                    }
+                }
+
+                if (isUser2Exist == null)
+                {
+                    try
+                    {
+                        var result = await userManager.CreateAsync(user2, "@#$Hamed.Cr7");
 
                     }
                     catch (Exception ex)
@@ -194,6 +223,31 @@ namespace BaseCore.Api
                     }
 
                 }
+                if (isRole2Exist == null)
+                {
+                    try
+                    {
+                        var result1 = await roleManager.CreateAsync(role2);
+                        if (result1.Succeeded)
+                        {
+                            try
+                            {
+                                var result2 = await userManager.AddToRoleAsync(user2, "User");
+
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception();
+                    }
+
+                }
+
                 if (context != null)
                 {
                     await context.Database.MigrateAsync();
