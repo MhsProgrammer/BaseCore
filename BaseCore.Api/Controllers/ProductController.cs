@@ -3,12 +3,14 @@ using BaseCore.Application.Features.Products.Queries;
 using BaseCore.Application.Responses;
 using BaseCore.Domain.Specifications.ProductSpec;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace BaseCore.Api.Controllers
 {
+    [Authorize]
     public class ProductController : BaseApiController
     {
         private readonly IMediator _mediator;

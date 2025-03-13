@@ -14,5 +14,23 @@ namespace BaseCore.Identity.IdentityContext
         public BaseCoreIdentityContext(DbContextOptions<BaseCoreIdentityContext> options) : base(options)
         {
         }
+
+        public DbSet<BlacklistToken> BlackListTokens { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BlacklistToken>()
+                .HasKey(t => t.Id);
+
+            modelBuilder.Entity<BlacklistToken>()
+                .Property(t => t.Token)
+                .IsRequired();
+
+            modelBuilder.Entity<BlacklistToken>()
+                .Property(t => t.ExpiryDate)
+                .IsRequired();
+        }
     }
 }

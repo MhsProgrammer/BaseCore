@@ -8,5 +8,9 @@ namespace BaseCore.Api.Middlewares
         {
             return builder.UseMiddleware<ExceptionHandlerMiddleware>();
         }
+        public static IApplicationBuilder UseBlackListToklen(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<BlackListTokenMiddleware>();
+        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using BaseCore.Application.Models.Authentication;
+﻿using BaseCore.Application.Contracts.Identity;
+using BaseCore.Application.Models.Authentication;
 using BaseCore.Identity.IdentityContext;
 using BaseCore.Identity.Models;
+using BaseCore.Identity.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -17,15 +19,18 @@ namespace BaseCore.Identity
     {
         public static void AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
+
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<AuthCookie>(configuration.GetSection("AuthCookie"));
 
             services.AddDbContext<BaseCoreIdentityContext>(options => options.UseSqlServer(configuration.GetConnectionString("BaseCoreIdentityConnection"),
                 b => b.MigrationsAssembly(typeof(BaseCoreIdentityContext).Assembly.FullName)));
 
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<BaseCoreIdentityContext>().AddDefaultTokenProviders();
+            //services.AddScoped<IBlacklistTokenRepository, BlacklistTokenRepository>();
 
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            //services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddAuthentication(options =>
             {
@@ -46,6 +51,16 @@ namespace BaseCore.Identity
                         ValidIssuer = configuration["JwtSettings:Issuer"],
                         ValidAudience = configuration["JwtSettings:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
+                    };
+                    o.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+
+                            context.Token = context.HttpContext.Request.Cookies["AuthToken"];
+                            return Task.CompletedTask;
+
+                        }
                     };
 
                     //o.Events = new JwtBearerEvents()

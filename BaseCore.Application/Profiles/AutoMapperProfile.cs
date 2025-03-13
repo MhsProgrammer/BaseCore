@@ -19,6 +19,9 @@ namespace BaseCore.Application.Profiles
             CreateMap<UpdateProductCommand, Product>();
             CreateMap<Product, ProductDto>();
             #endregion
+
+
+            
         }
     }
 }
